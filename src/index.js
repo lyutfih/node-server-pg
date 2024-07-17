@@ -4,6 +4,7 @@ import http from 'http';
 import { createPost, deletePost, getPosts, getPostById, updatePost } from './crudOperations.js';
 // Import utility functions
 import { regex, returnErrorWithMessage } from './utils.js';
+import checkPostExists from './middlewares/checkPost.js';
 
 // Base resource
 const resource = '/posts';
@@ -16,9 +17,12 @@ const requestHandler = async (req, res) => {
     if (method === 'POST') return await createPost(req, res);
     else return returnErrorWithMessage(res, 405, 'Method Not Allowed');
   } else if (regex(resource).test(url)) {
-    if (method === 'GET') return await getPostById(req, res);
-    if (method === 'PUT') return await updatePost(req, res);
-    if (method === 'DELETE') return await deletePost(req, res);
+    if (method === 'GET') return await 
+    checkPostExists(req,res, () => getPostById(req, res));
+    if (method === 'PUT') return await 
+    checkPostExists(req,res, () => updatePost(req, res));
+    if (method === 'DELETE') return await 
+    checkPostExists(req,res, () => deletePost(req, res));
     else return returnErrorWithMessage(res, 405, 'Method Not Allowed');
   } else {
     return returnErrorWithMessage(res, 404, 'Resource Not Found');
